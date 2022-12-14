@@ -1,0 +1,3 @@
+Make stumps match texture of log they replace
+Make roots match texture of block they replace
+Make oversized models for stump and roots

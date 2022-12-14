@@ -1,3 +1,2 @@
 Make stumps match texture of log they replace
 Make roots match texture of block they replace
-Fix Z fighting issue, possibly with a culling option

@@ -12,20 +12,23 @@ import static com.fantasticsource.tougherstumps.TougherStumps.MODID;
 
 public class BlockRoots extends Block
 {
-    public BlockRoots()
+    public Block log;
+
+    public BlockRoots(Block log)
     {
         super(Material.WOOD);
+        this.log = log;
         setBlockUnbreakable();
         setSoundType(SoundType.WOOD);
-        setUnlocalizedName(MODID + ":roots");
-        setRegistryName("roots");
-        Blocks.FIRE.setFireInfo(this, 1, 1);
+        setUnlocalizedName(MODID + ":roots_" + log.getRegistryName().getResourceDomain() + "_" + log.getRegistryName().getResourcePath());
+        setRegistryName("roots_" + log.getRegistryName().getResourceDomain() + "_" + log.getRegistryName().getResourcePath());
+        Blocks.FIRE.setFireInfo(this, (int) (Blocks.FIRE.getEncouragement(log) * 0.2), (int) (Blocks.FIRE.getFlammability(log) * 0.2));
     }
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
     {
         pos = pos.up();
-        if (worldIn.getBlockState(pos).getBlock() == BlocksAndItems.blockStump) worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+        if (worldIn.getBlockState(pos).getBlock() == BlocksAndItems.stumpBlocks.get(log)) worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
     }
 }

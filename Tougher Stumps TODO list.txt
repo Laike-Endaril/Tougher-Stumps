@@ -1,2 +1,5 @@
 Make stumps match texture of log they replace
-Make roots match texture of block they replace
+Have roots store the block they replaced and render it in addition to own model
+Fix Z fighting with self when 2 stumps are next to each other
+
+Fix

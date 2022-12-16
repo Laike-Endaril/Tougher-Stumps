@@ -2,7 +2,6 @@ package com.wynprice.secretroomsmod.base;
 
 import com.wynprice.secretroomsmod.SecretRooms5;
 import com.wynprice.secretroomsmod.base.interfaces.ISecretTileEntity;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.SoundType;
@@ -19,21 +18,20 @@ import net.minecraft.world.World;
 
 public class BaseItemDoor extends Item
 {
-	private final BaseBlockDoor door;
-	
-	public BaseItemDoor(BaseBlockDoor door, String name)
-	{
-		this.door = door;
-		setUnlocalizedName(name);
-		setRegistryName(SecretRooms5.MODID, name);
-	}
+    private final BaseBlockDoor door;
 
-	
-	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand,
-			EnumFacing facing, float hitX, float hitY, float hitZ) 
-	{
-		if (facing != EnumFacing.UP)
+    public BaseItemDoor(BaseBlockDoor door, String name)
+    {
+        this.door = door;
+        setUnlocalizedName(name);
+        setRegistryName(SecretRooms5.MODID, name);
+    }
+
+
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        if (facing != EnumFacing.UP)
         {
             return EnumActionResult.FAIL;
         }
@@ -50,7 +48,7 @@ public class BaseItemDoor extends Item
 
             if (player.canPlayerEdit(pos, facing, itemstack) && door.canPlaceBlockAt(worldIn, pos))
             {
-                EnumFacing enumfacing = EnumFacing.fromAngle((double)player.rotationYaw);
+                EnumFacing enumfacing = EnumFacing.fromAngle((double) player.rotationYaw);
                 int i = enumfacing.getFrontOffsetX();
                 int j = enumfacing.getFrontOffsetZ();
                 boolean flag = i < 0 && hitZ < 0.5F || i > 0 && hitZ > 0.5F || j < 0 && hitX > 0.5F || j > 0 && hitX < 0.5F;
@@ -65,9 +63,9 @@ public class BaseItemDoor extends Item
                 return EnumActionResult.FAIL;
             }
         }
-	}
-	
-	public static void placeDoor(World worldIn, BlockPos pos, IBlockState mirrorState, EnumFacing facing, Block door, boolean isRightHinge)
+    }
+
+    public static void placeDoor(World worldIn, BlockPos pos, IBlockState mirrorState, EnumFacing facing, Block door, boolean isRightHinge)
     {
         BlockPos blockpos = pos.offset(facing.rotateY());
         BlockPos blockpos1 = pos.offset(facing.rotateYCCW());
@@ -92,8 +90,8 @@ public class BaseItemDoor extends Item
         IBlockState iblockstate = door.getDefaultState().withProperty(BlockDoor.FACING, facing).withProperty(BlockDoor.HINGE, isRightHinge ? BlockDoor.EnumHingePosition.RIGHT : BlockDoor.EnumHingePosition.LEFT).withProperty(BlockDoor.POWERED, Boolean.valueOf(flag2)).withProperty(BlockDoor.OPEN, Boolean.valueOf(flag2));
         worldIn.setBlockState(pos, iblockstate.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.LOWER), 3);
         worldIn.setBlockState(blockpos2, iblockstate.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER), 3);
-        ((ISecretTileEntity)worldIn.getTileEntity(pos)).setMirrorState(mirrorState, pos);
-        ((ISecretTileEntity)worldIn.getTileEntity(blockpos2)).setMirrorState(mirrorState, blockpos2);
+        ((ISecretTileEntity) worldIn.getTileEntity(pos)).setMirrorState(mirrorState, pos);
+        ((ISecretTileEntity) worldIn.getTileEntity(blockpos2)).setMirrorState(mirrorState, blockpos2);
         worldIn.notifyNeighborsOfStateChange(pos, door, false);
         worldIn.notifyNeighborsOfStateChange(blockpos2, door, false);
     }

@@ -5,7 +5,6 @@ import com.wynprice.secretroomsmod.SecretItems;
 import com.wynprice.secretroomsmod.base.interfaces.ISecretBlock;
 import com.wynprice.secretroomsmod.render.fakemodels.DoorFakeModel;
 import com.wynprice.secretroomsmod.render.fakemodels.FakeBlockModel;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.SoundType;
@@ -13,9 +12,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumBlockRenderType;
@@ -30,68 +28,74 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BaseBlockDoor extends BlockDoor implements ISecretBlock
 {
 
-	public BaseBlockDoor(String name, Material materialIn) {
-		super(materialIn);
-		this.setRegistryName(name);
-		this.setUnlocalizedName(name);
-		this.setHardness(0.5f);
-		this.translucent = true;
+    public BaseBlockDoor(String name, Material materialIn)
+    {
+        super(materialIn);
+        this.setRegistryName(name);
+        this.setUnlocalizedName(name);
+        this.setHardness(0.5f);
+        this.translucent = true;
     }
-	
-	@Override
-	public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, SpawnPlacementType type) {
-		return false;
-	}
-	
-	@Override
-	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
-		return new ItemStack(this == SecretBlocks.SECRET_IRON_DOOR ? SecretItems.SECRET_IRON_DOOR : SecretItems.SECRET_WOODEN_DOOR);
-	}
-	
-	@Override
-	public Item getItemDropped(IBlockState state, java.util.Random rand, int fortune) {
-		return this == SecretBlocks.SECRET_IRON_DOOR ? SecretItems.SECRET_IRON_DOOR : SecretItems.SECRET_WOODEN_DOOR;
-	}
-	
-	@Override
-	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing) {
-		return getState(world, pos).getBlock().canBeConnectedTo(world, pos, facing);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public FakeBlockModel phaseModel(FakeBlockModel model) {
-		return new DoorFakeModel(model);
-	}
-	
-	@Override
-	public IBlockState overrideThisState(World world, BlockPos pos, IBlockState defaultState)
-	{
-		return defaultState.getValue(HALF) != EnumDoorHalf.UPPER || world.getBlockState(pos.down()).getBlock() != this ? defaultState : 
-			defaultState.withProperty(OPEN, world.getBlockState(pos.down()).getValue(OPEN)).withProperty(FACING, world.getBlockState(pos.down()).getValue(FACING))
-			.withProperty(POWERED, world.getBlockState(pos.down()).getValue(POWERED));
-	}
-	
-	@Override
-	public Material getMaterial(IBlockState state) 
-	{
-		return ISecretBlock.super.getMaterial(state, super.getMaterial(state));
-	}
-	
-	@Override
-	public SoundType getSoundType(IBlockState state, World world, BlockPos pos, Entity entity) 
-	{
-		return ISecretBlock.super.getSoundType(state, world, pos, entity);
-	}
-	
-	public boolean isFullCube(IBlockState state)
+
+    @Override
+    public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, SpawnPlacementType type)
     {
         return false;
     }
-	
-	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
+
+    @Override
+    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state)
     {
-		if (state.getValue(HALF) == EnumDoorHalf.UPPER)
+        return new ItemStack(this == SecretBlocks.SECRET_IRON_DOOR ? SecretItems.SECRET_IRON_DOOR : SecretItems.SECRET_WOODEN_DOOR);
+    }
+
+    @Override
+    public Item getItemDropped(IBlockState state, java.util.Random rand, int fortune)
+    {
+        return this == SecretBlocks.SECRET_IRON_DOOR ? SecretItems.SECRET_IRON_DOOR : SecretItems.SECRET_WOODEN_DOOR;
+    }
+
+    @Override
+    public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
+    {
+        return getState(world, pos).getBlock().canBeConnectedTo(world, pos, facing);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public FakeBlockModel phaseModel(FakeBlockModel model)
+    {
+        return new DoorFakeModel(model);
+    }
+
+    @Override
+    public IBlockState overrideThisState(World world, BlockPos pos, IBlockState defaultState)
+    {
+        return defaultState.getValue(HALF) != EnumDoorHalf.UPPER || world.getBlockState(pos.down()).getBlock() != this ? defaultState :
+                defaultState.withProperty(OPEN, world.getBlockState(pos.down()).getValue(OPEN)).withProperty(FACING, world.getBlockState(pos.down()).getValue(FACING))
+                        .withProperty(POWERED, world.getBlockState(pos.down()).getValue(POWERED));
+    }
+
+    @Override
+    public Material getMaterial(IBlockState state)
+    {
+        return ISecretBlock.super.getMaterial(state, super.getMaterial(state));
+    }
+
+    @Override
+    public SoundType getSoundType(IBlockState state, World world, BlockPos pos, Entity entity)
+    {
+        return ISecretBlock.super.getSoundType(state, world, pos, entity);
+    }
+
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
+    {
+        if (state.getValue(HALF) == EnumDoorHalf.UPPER)
         {
             BlockPos blockpos = pos.down();
             IBlockState iblockstate = worldIn.getBlockState(blockpos);
@@ -117,7 +121,7 @@ public class BaseBlockDoor extends BlockDoor implements ISecretBlock
                 flag1 = true;
             }
 
-            if (!worldIn.getBlockState(pos.down()).isSideSolid(worldIn,  pos.down(), EnumFacing.UP))
+            if (!worldIn.getBlockState(pos.down()).isSideSolid(worldIn, pos.down(), EnumFacing.UP))
             {
                 worldIn.setBlockToAir(pos);
                 flag1 = true;
@@ -139,34 +143,34 @@ public class BaseBlockDoor extends BlockDoor implements ISecretBlock
             {
                 boolean flag = worldIn.isBlockPowered(pos) || worldIn.isBlockPowered(blockpos1);
 
-                if (blockIn != this && (flag || blockIn.getDefaultState().canProvidePower()) && flag != ((Boolean)iblockstate1.getValue(POWERED)).booleanValue())
+                if (blockIn != this && (flag || blockIn.getDefaultState().canProvidePower()) && flag != iblockstate1.getValue(POWERED))
                 {
-                    worldIn.setBlockState(blockpos1, iblockstate1.withProperty(POWERED, Boolean.valueOf(flag)), 2);
+                    worldIn.setBlockState(blockpos1, iblockstate1.withProperty(POWERED, flag), 2);
 
-                    if (flag != ((Boolean)state.getValue(OPEN)).booleanValue())
+                    if (flag != state.getValue(OPEN))
                     {
-                        worldIn.setBlockState(pos, state.withProperty(OPEN, Boolean.valueOf(flag)), 2);
+                        worldIn.setBlockState(pos, state.withProperty(OPEN, flag), 2);
                         worldIn.markBlockRangeForRenderUpdate(pos, pos);
                     }
                 }
             }
         }
     }
-	
+
     @SideOnly(Side.CLIENT)
-	@Override
-	public boolean addHitEffects(IBlockState state, World worldObj, RayTraceResult target, ParticleManager manager) 
-	{
-    	return ISecretBlock.super.addHitEffects(state, worldObj, target, manager);
-	}
-		
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean addDestroyEffects(World world, BlockPos pos, ParticleManager manager) 
-	{
-		return ISecretBlock.super.addDestroyEffects(world, pos, manager);
-	}
-	
+    @Override
+    public boolean addHitEffects(IBlockState state, World worldObj, RayTraceResult target, ParticleManager manager)
+    {
+        return ISecretBlock.super.addHitEffects(state, worldObj, target, manager);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean addDestroyEffects(World world, BlockPos pos, ParticleManager manager)
+    {
+        return ISecretBlock.super.addDestroyEffects(world, pos, manager);
+    }
+
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
         return EnumBlockRenderType.INVISIBLE;
@@ -182,17 +186,16 @@ public class BaseBlockDoor extends BlockDoor implements ISecretBlock
     {
         return 1.0F;
     }
-	
-    @Override
-	public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side) 
-	{	
-		return ISecretBlock.super.canPlaceBlockOnSide(worldIn, pos, side);
-	}
-		
-	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer,
-			ItemStack stack) {
-		ISecretBlock.super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-	}
 
+    @Override
+    public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side)
+    {
+        return ISecretBlock.super.canPlaceBlockOnSide(worldIn, pos, side);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    {
+        ISecretBlock.super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+    }
 }

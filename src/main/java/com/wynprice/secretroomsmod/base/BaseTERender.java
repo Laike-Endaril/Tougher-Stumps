@@ -35,8 +35,9 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
     @Override
     public void render(T tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
-        if (!(tileEntity instanceof ISecretTileEntity))
-            return;
+        if (!(tileEntity instanceof ISecretTileEntity)) return;
+
+
         ISecretTileEntity te = (ISecretTileEntity) tileEntity;
         GlStateManager.pushMatrix();
         {

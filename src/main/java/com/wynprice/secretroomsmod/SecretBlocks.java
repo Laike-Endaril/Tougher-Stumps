@@ -32,10 +32,10 @@ public class SecretBlocks
         regSingleBlockIgnoreAll(SECRET_IRON_DOOR);
     }
 
-    private final static ArrayList<Block> BLOCKS_WITH_ITEMS = new ArrayList<Block>();
+    private final static ArrayList<Block> BLOCKS_WITH_ITEMS = new ArrayList<>();
     private final static HashMap<Block, Integer> BLOCK_STACK_SIZES = new HashMap<>();
-    private final static ArrayList<Block> BLOCKS_WITH_CUSTOM_STATE_MAP = new ArrayList<Block>();
-    private final static ArrayList<IProperty<?>[]> PROPERTIES_TO_IGNORE_CUSTOM_STATE_MAP = new ArrayList<IProperty<?>[]>();
+    private final static ArrayList<Block> BLOCKS_WITH_CUSTOM_STATE_MAP = new ArrayList<>();
+    private final static ArrayList<IProperty<?>[]> PROPERTIES_TO_IGNORE_CUSTOM_STATE_MAP = new ArrayList<>();
 
     public static void regRenders()
     {
@@ -43,11 +43,6 @@ public class SecretBlocks
             createStateMappers(BLOCKS_WITH_CUSTOM_STATE_MAP.get(i), PROPERTIES_TO_IGNORE_CUSTOM_STATE_MAP.get(i));
         for (Block b : BLOCKS_WITH_ITEMS)
             regRender(b);
-    }
-
-    private static void regBlock(Block block)
-    {
-        regBlock(block, 64);
     }
 
     private static void regBlock(Block block, int stackSize)
@@ -84,11 +79,6 @@ public class SecretBlocks
     private static void createStateMappers(Block block, IProperty<?>[] toIgnore)
     {
         ModelLoader.setCustomStateMapper(block, (new StateMap.Builder().ignore(toIgnore)).build());
-    }
-
-    private static void regSingleBlock(Block block)
-    {
-        register(block);
     }
 
     private static void regSingleBlock(Block block, IProperty<?>... toIgnore)

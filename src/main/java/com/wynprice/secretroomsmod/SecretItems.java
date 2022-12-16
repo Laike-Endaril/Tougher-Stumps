@@ -23,25 +23,11 @@ public class SecretItems
 
     public static void regRenders()
     {
-        for (Item item : ALL_ITEMS)
-            regRender(item);
+        for (Item item : ALL_ITEMS) regRender(item);
     }
 
     public final static ArrayList<Item> ALL_ITEMS = new ArrayList<Item>();
 
-
-    private static String[] emptyList(int size)
-    {
-        String[] s = new String[size];
-        for (int i = 0; i < size; i++)
-            s[i] = "";
-        return s;
-    }
-
-    private static Item getItem(Item item)
-    {
-        return item;
-    }
 
     private static void regItem(Item item)
     {
@@ -61,5 +47,4 @@ public class SecretItems
         item.setCreativeTab(SecretRooms5.TAB);
         ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
-
 }

@@ -27,7 +27,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BaseBlockDoor extends BlockDoor implements ISecretBlock
 {
-
     public BaseBlockDoor(String name, Material materialIn)
     {
         super(materialIn);

@@ -1,6 +1,6 @@
 package com.wynprice.secretroomsmod.base.interfaces;
 
-import com.wynprice.secretroomsmod.SecretRooms5;
+import com.wynprice.secretroomsmod.proxy.ClientProxy;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ITickable;
@@ -44,7 +44,7 @@ public interface ISecretTileEntity extends ITickable
                 worlds.put(server.provider.getDimension(), server);
         for (int dim : RENDER_MAP.keySet())
             if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
-                returnState = getMirrorState(SecretRooms5.proxy.getPlayer().world, pos);
+                returnState = getMirrorState(ClientProxy.getPlayer().world, pos);
             else if (worlds.get(dim) == access)
                 returnState = getMirrorState(worlds.get(dim), pos);
         return returnState == null ? Blocks.STONE.getDefaultState() : returnState;

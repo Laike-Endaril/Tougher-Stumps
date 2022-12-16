@@ -76,15 +76,9 @@ public class BaseItemDoor extends Item
 
         if ((!flag || flag1) && j <= i)
         {
-            if (flag1 && !flag || j < i)
-            {
-                isRightHinge = false;
-            }
+            if (flag1 && !flag || j < i) isRightHinge = false;
         }
-        else
-        {
-            isRightHinge = true;
-        }
+        else isRightHinge = true;
         BlockPos blockpos2 = pos.up();
         boolean flag2 = worldIn.isBlockPowered(pos) || worldIn.isBlockPowered(blockpos2);
         IBlockState iblockstate = door.getDefaultState().withProperty(BlockDoor.FACING, facing).withProperty(BlockDoor.HINGE, isRightHinge ? BlockDoor.EnumHingePosition.RIGHT : BlockDoor.EnumHingePosition.LEFT).withProperty(BlockDoor.POWERED, Boolean.valueOf(flag2)).withProperty(BlockDoor.OPEN, Boolean.valueOf(flag2));

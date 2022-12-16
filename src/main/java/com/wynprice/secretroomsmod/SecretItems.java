@@ -26,7 +26,7 @@ public class SecretItems
         for (Item item : ALL_ITEMS) regRender(item);
     }
 
-    public final static ArrayList<Item> ALL_ITEMS = new ArrayList<Item>();
+    public final static ArrayList<Item> ALL_ITEMS = new ArrayList<>();
 
 
     private static void regItem(Item item)

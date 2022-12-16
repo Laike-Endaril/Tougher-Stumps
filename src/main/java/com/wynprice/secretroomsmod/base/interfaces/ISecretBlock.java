@@ -134,8 +134,6 @@ public interface ISecretBlock extends ITileEntityProvider
         if (ParticleHandler.BLOCKBRAKERENDERMAP.get(pos) != null)
         {
             IBlockState state = ParticleHandler.BLOCKBRAKERENDERMAP.get(pos).getActualState(world, pos);
-            int i = 4;
-
             for (int j = 0; j < 4; ++j)
             {
                 for (int k = 0; k < 4; ++k)

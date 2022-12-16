@@ -1,29 +1,28 @@
 package com.wynprice.secretroomsmod;
 
-import com.wynprice.secretroomsmod.proxy.CommonProxy;
+import com.wynprice.secretroomsmod.handler.ParticleHandler;
+import com.wynprice.secretroomsmod.handler.ServerRecievePacketHandler;
+import com.wynprice.secretroomsmod.proxy.ClientProxy;
+import com.wynprice.secretroomsmod.tileentity.TileEntityInfomationHolder;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(
-        modid = SecretRooms5.MODID,
-        name = SecretRooms5.MODNAME,
-        version = SecretRooms5.VERSION,
-        acceptedMinecraftVersions = "1.11.2")
+@Mod(modid = SecretRooms5.MODID, name = SecretRooms5.MODNAME, version = SecretRooms5.VERSION, acceptedMinecraftVersions = "1.11.2")
 public class SecretRooms5
 {
     public static final String MODID = "secretroomsmod";
     public static final String MODNAME = "Secret Rooms 5";
     public static final String VERSION = "5.1.9";
 
-
-    @SidedProxy(modId = MODID, clientSide = "com.wynprice.secretroomsmod.proxy.ClientProxy", serverSide = "com.wynprice.secretroomsmod.proxy.CommonProxy")
-    public static CommonProxy proxy;
 
     @Instance(MODID)
     public static SecretRooms5 instance;
@@ -39,12 +38,23 @@ public class SecretRooms5
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        proxy.preInit(event);
+        SecretItems.preInit();
+        SecretBlocks.preInit();
+
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            SecretItems.regRenders();
+            SecretBlocks.regRenders();
+            ClientProxy.init(event);
+        }
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        proxy.init(event);
+        GameRegistry.registerTileEntity(TileEntityInfomationHolder.class, SecretRooms5.MODID + TileEntityInfomationHolder.class.getSimpleName());
+
+        MinecraftForge.EVENT_BUS.register(new ParticleHandler());
+        MinecraftForge.EVENT_BUS.register(new ServerRecievePacketHandler());
     }
 }

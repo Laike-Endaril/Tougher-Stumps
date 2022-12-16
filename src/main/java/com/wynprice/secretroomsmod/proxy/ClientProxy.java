@@ -1,31 +1,24 @@
 package com.wynprice.secretroomsmod.proxy;
 
-import com.wynprice.secretroomsmod.SecretBlocks;
-import com.wynprice.secretroomsmod.SecretItems;
 import com.wynprice.secretroomsmod.base.BaseTERender;
 import com.wynprice.secretroomsmod.tileentity.TileEntityInfomationHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ClientProxy extends CommonProxy
+public class ClientProxy
 {
-    @Override
-    public void preInit(FMLPreInitializationEvent event)
-    {
-        super.preInit(event);
-
-        SecretItems.regRenders();
-
-        SecretBlocks.regRenders();
-
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfomationHolder.class, new BaseTERender<>());
-    }
-
-    @Override
-    public EntityPlayer getPlayer()
+    @SideOnly(Side.CLIENT)
+    public static EntityPlayer getPlayer()
     {
         return Minecraft.getMinecraft().player;
+    }
+
+    public static void init(FMLPreInitializationEvent event)
+    {
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfomationHolder.class, new BaseTERender<>());
     }
 }

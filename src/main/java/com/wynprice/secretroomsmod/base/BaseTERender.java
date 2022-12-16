@@ -1,6 +1,5 @@
 package com.wynprice.secretroomsmod.base;
 
-import com.wynprice.secretroomsmod.SecretConfig;
 import com.wynprice.secretroomsmod.base.interfaces.ISecretBlock;
 import com.wynprice.secretroomsmod.base.interfaces.ISecretTileEntity;
 import com.wynprice.secretroomsmod.render.fakemodels.FakeBlockModel;
@@ -64,7 +63,7 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
             if (block instanceof ISecretBlock && te.getMirrorState() != null)
             {
                 IBlockState renderState = te.getMirrorState().getBlock().getActualState(te.getMirrorState(), tileEntity.getWorld(), tileEntity.getPos());
-                GlStateManager.shadeModel(Minecraft.isAmbientOcclusionEnabled() || SecretConfig.forceAO ? 7425 : 7424);
+                GlStateManager.shadeModel(Minecraft.isAmbientOcclusionEnabled() ? 7425 : 7424);
 
                 currentRender = ((ISecretBlock) block).overrideThisState(world, currentPos, currentRender);
                 try
@@ -93,18 +92,13 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
                         tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
             }
             Collections.reverse(tintList);
-            boolean isColorBlock = false;
-            if (te.getMirrorState() != null)
-                for (String s : SecretConfig.forcedBlockColors)
-                    if (s.equals(te.getMirrorState().getBlock().getRegistryName().toString()) && ((ISecretBlock) block).allowForcedBlockColors())
-                        isColorBlock = true;
             for (int i = 0; i < tessellator.getBuffer().getVertexCount() + 1; i++)
             {
                 int sec = Math.floorDiv(i - 1, 4);
-                if (!isColorBlock && (sec < 0 || tintList.size() <= sec || tintList.get(sec) < 0))
+                if (sec < 0 || tintList.size() <= sec || tintList.get(sec) < 0)
                     continue;
                 Color color = new Color(Minecraft.getMinecraft().getBlockColors()
-                        .colorMultiplier(te.getMirrorState(), tileEntity.getWorld(), tileEntity.getPos(), isColorBlock ? 1 : tintList.get(sec)));
+                        .colorMultiplier(te.getMirrorState(), tileEntity.getWorld(), tileEntity.getPos(), tintList.get(sec)));
                 tessellator.getBuffer().putColorMultiplier(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, i);
             }
 

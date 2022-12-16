@@ -1,6 +1,5 @@
 package com.wynprice.secretroomsmod.base;
 
-import com.wynprice.secretroomsmod.base.interfaces.ISecretBlock;
 import com.wynprice.secretroomsmod.base.interfaces.ISecretTileEntity;
 import com.wynprice.secretroomsmod.render.fakemodels.FakeBlockModel;
 import net.minecraft.block.Block;
@@ -60,35 +59,35 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
             currentRender = tileEntity.getWorld().getBlockState(tileEntity.getPos()).getActualState(tileEntity.getWorld(), tileEntity.getPos());
             currentPos = tileEntity.getPos();
             currentWorld = tileEntity.getWorld();
-            if (block instanceof ISecretBlock && te.getMirrorState() != null)
+            if (block instanceof BaseBlockDoor && te.getMirrorState() != null)
             {
                 IBlockState renderState = te.getMirrorState().getBlock().getActualState(te.getMirrorState(), tileEntity.getWorld(), tileEntity.getPos());
                 GlStateManager.shadeModel(Minecraft.isAmbientOcclusionEnabled() ? 7425 : 7424);
 
-                currentRender = ((ISecretBlock) block).overrideThisState(world, currentPos, currentRender);
+                currentRender = ((BaseBlockDoor) block).overrideThisState(world, currentPos, currentRender);
                 try
                 {
-                    Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, ((ISecretBlock) block).phaseModel(new FakeBlockModel(renderState)),
+                    Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, ((BaseBlockDoor) block).phaseModel(new FakeBlockModel(renderState)),
                             world.getBlockState(tileEntity.getPos()), tileEntity.getPos(), Tessellator.getInstance().getBuffer(), false);
                 }
                 catch (Throwable e)
                 {
                     try
                     {
-                        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, ((ISecretBlock) block).phaseModel(new FakeBlockModel(renderState)),
+                        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, ((BaseBlockDoor) block).phaseModel(new FakeBlockModel(renderState)),
                                 renderState, tileEntity.getPos(), Tessellator.getInstance().getBuffer(), false);
                     }
                     catch (Throwable t)
                     {
-                        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, ((ISecretBlock) block).phaseModel(new FakeBlockModel(Blocks.STONE.getDefaultState())),
+                        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, ((BaseBlockDoor) block).phaseModel(new FakeBlockModel(Blocks.STONE.getDefaultState())),
                                 Blocks.STONE.getDefaultState(), tileEntity.getPos(), Tessellator.getInstance().getBuffer(), false);
                     }
                 }
 
-                for (BakedQuad quad : ((ISecretBlock) block).phaseModel(new FakeBlockModel(renderState)).getQuads(renderState, null, 0L))
+                for (BakedQuad quad : ((BaseBlockDoor) block).phaseModel(new FakeBlockModel(renderState)).getQuads(renderState, null, 0L))
                     tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
                 for (EnumFacing face : EnumFacing.values())
-                    for (BakedQuad quad : ((ISecretBlock) block).phaseModel(new FakeBlockModel(renderState)).getQuads(renderState, face, 0L))
+                    for (BakedQuad quad : ((BaseBlockDoor) block).phaseModel(new FakeBlockModel(renderState)).getQuads(renderState, face, 0L))
                         tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
             }
             Collections.reverse(tintList);

@@ -1,7 +1,7 @@
 package com.wynprice.secretroomsmod.render.fakemodels;
 
+import com.wynprice.secretroomsmod.base.BaseBlockDoor;
 import com.wynprice.secretroomsmod.base.BaseTERender;
-import com.wynprice.secretroomsmod.base.interfaces.ISecretBlock;
 import com.wynprice.secretroomsmod.base.interfaces.ISecretTileEntity;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -21,7 +21,7 @@ public abstract class BaseTextureFakeModel extends FakeBlockModel
 
     public abstract IBlockState getNormalStateWith(IBlockState s);
 
-    protected abstract Class<? extends ISecretBlock> getBaseBlockClass();
+    protected abstract Class<? extends BaseBlockDoor> getBaseBlockClass();
 
     protected EnumFacing[] fallbackOrder()
     {

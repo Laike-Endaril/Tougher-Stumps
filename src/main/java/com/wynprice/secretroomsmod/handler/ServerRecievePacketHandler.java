@@ -1,6 +1,5 @@
 package com.wynprice.secretroomsmod.handler;
 
-import com.wynprice.secretroomsmod.base.interfaces.ISecretBlock;
 import com.wynprice.secretroomsmod.base.interfaces.ISecretTileEntity;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
@@ -24,7 +23,6 @@ public class ServerRecievePacketHandler
                 if (event.world.getTileEntity(pos) instanceof ISecretTileEntity)
                 {
                     ((ISecretTileEntity) event.world.getTileEntity(pos)).setMirrorState(UPDATE_MAP.get(pos).state, UPDATE_MAP.get(pos).pos);
-                    ((ISecretBlock) event.world.getBlockState(pos).getBlock()).onMessageRecieved(event.world, pos);
                 }
                 else newMap.put(pos, UPDATE_MAP.get(pos));
             }

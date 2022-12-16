@@ -1,6 +1,6 @@
 package com.wynprice.secretroomsmod.tileentity;
 
-import com.wynprice.secretroomsmod.base.interfaces.ISecretBlock;
+import com.wynprice.secretroomsmod.base.BaseBlockDoor;
 import com.wynprice.secretroomsmod.base.interfaces.ISecretTileEntity;
 import com.wynprice.secretroomsmod.handler.ParticleHandler;
 import net.minecraft.block.Block;
@@ -30,10 +30,10 @@ public class TileEntityInfomationHolder extends TileEntity implements ITickable,
         Block testBlock = Block.REGISTRY.getObject(new ResourceLocation(getTileData().getString("MirrorBlock")));
         if (testBlock != Blocks.AIR)
             mirrorState = testBlock.getStateFromMeta(getTileData().getInteger("MirrorMeta"));
-        if (mirrorState != null && mirrorState.getBlock() instanceof ISecretBlock)
+        if (mirrorState != null && mirrorState.getBlock() instanceof BaseBlockDoor)
             mirrorState = null;
-        if (!ISecretBlock.ALL_SECRET_TILE_ENTITIES.contains(this))
-            ISecretBlock.ALL_SECRET_TILE_ENTITIES.add(this);
+        if (!BaseBlockDoor.ALL_SECRET_TILE_ENTITIES.contains(this))
+            BaseBlockDoor.ALL_SECRET_TILE_ENTITIES.add(this);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TileEntityInfomationHolder extends TileEntity implements ITickable,
 
     public void setMirrorStateForcable(IBlockState mirrorState, @Nullable BlockPos pos)
     {
-        if (mirrorState.getBlock() instanceof ISecretBlock) mirrorState = Blocks.STONE.getDefaultState();
+        if (mirrorState.getBlock() instanceof BaseBlockDoor) mirrorState = Blocks.STONE.getDefaultState();
         ISecretTileEntity.getMap(world).put(this.pos, mirrorState);
         this.mirrorState = mirrorState.getBlock().getStateFromMeta(mirrorState.getBlock().getMetaFromState(mirrorState));
     }

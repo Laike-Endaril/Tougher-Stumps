@@ -1,7 +1,6 @@
 package com.wynprice.secretroomsmod.render.fakemodels;
 
 import com.wynprice.secretroomsmod.base.BaseBlockDoor;
-import com.wynprice.secretroomsmod.base.interfaces.ISecretBlock;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -21,7 +20,7 @@ public class DoorFakeModel extends BaseTextureFakeModel
     }
 
     @Override
-    protected Class<? extends ISecretBlock> getBaseBlockClass()
+    protected Class<? extends BaseBlockDoor> getBaseBlockClass()
     {
         return BaseBlockDoor.class;
     }

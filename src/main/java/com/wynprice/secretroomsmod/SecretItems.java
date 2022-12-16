@@ -10,14 +10,12 @@ import java.util.ArrayList;
 
 public class SecretItems
 {
-    public static final Item CAMOUFLAGE_PASTE = new Item().setRegistryName(SecretRooms5.MODID, "camouflage_paste").setUnlocalizedName("camouflage_paste");
     public static final Item SECRET_WOODEN_DOOR = new BaseItemDoor(SecretBlocks.SECRET_WOODEN_DOOR, "secret_wooden_door");
     public static final Item SECRET_IRON_DOOR = new BaseItemDoor(SecretBlocks.SECRET_IRON_DOOR, "secret_iron_door");
 
 
     public static void preInit()
     {
-        regItem(CAMOUFLAGE_PASTE);
         regItem(SECRET_WOODEN_DOOR);
         regItem(SECRET_IRON_DOOR);
     }

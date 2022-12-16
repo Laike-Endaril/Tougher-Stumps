@@ -1,7 +1,7 @@
 package com.wynprice.secretroomsmod;
 
 import com.wynprice.secretroomsmod.base.BaseBlockDoor;
-import com.wynprice.secretroomsmod.blocks.*;
+import com.wynprice.secretroomsmod.blocks.SecretStairs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -20,40 +20,16 @@ import java.util.HashMap;
 public class SecretBlocks
 {
 
-    public static final Block GHOST_BLOCK = new GhostBlock();
     public static final Block FAKE_STAIRS = new SecretStairs();
-    public static final Block FAKE_LEVER = new SecretLever();
-    public static final Block FAKE_REDSTONE = new SecretRedstone();
-    public static final Block ONE_WAY_GLASS = new OneWayGlass();
-    public static final Block SECRET_WOODEN_BUTTON = new SecretButton(true);
-    public static final Block SECRET_STONE_BUTTON = new SecretButton(false);
-    public static final Block TORCH_LEVER = new TorchLever();
-    public static final Block SOLID_AIR = new SolidAir();
     public static final BaseBlockDoor SECRET_WOODEN_DOOR = new BaseBlockDoor("secret_wooden_door", Material.WOOD);
     public static final BaseBlockDoor SECRET_IRON_DOOR = new BaseBlockDoor("secret_iron_door", Material.IRON);
-    public static final Block SECRET_WOODEN_TRAPDOOR = new SecretTrapDoor("secret_wooden_trapdoor", Material.WOOD);
-    public static final Block SECRET_IRON_TRAPDOOR = new SecretTrapDoor("secret_iron_trapdoor", Material.IRON);
-    public static final Block SECRET_GATE_BLOCK = new SecretGateEmptyBlock();
-    public static final Block SECRET_GATE = new SecretGate();
 
 
     public static void preInit()
     {
-        regBlock(GHOST_BLOCK);
         regBlockIgnoreAll(FAKE_STAIRS);
-        regBlockIgnoreAll(FAKE_LEVER);
-        regBlockIgnoreAll(FAKE_REDSTONE);
-        regBlockIgnoreAll(ONE_WAY_GLASS);
-        regBlockIgnoreAll(SECRET_WOODEN_BUTTON);
-        regBlockIgnoreAll(SECRET_STONE_BUTTON);
-        regBlock(TORCH_LEVER, 64, TorchLever.POWERED);
-        regBlock(SOLID_AIR);
         regSingleBlockIgnoreAll(SECRET_WOODEN_DOOR);
         regSingleBlockIgnoreAll(SECRET_IRON_DOOR);
-        regBlockIgnoreAll(SECRET_WOODEN_TRAPDOOR);
-        regBlockIgnoreAll(SECRET_IRON_TRAPDOOR);
-        regSingleBlock(SECRET_GATE_BLOCK);
-        regBlockIgnoreAll(SECRET_GATE);
     }
 
     private final static ArrayList<Block> BLOCKS_WITH_ITEMS = new ArrayList<Block>();

@@ -1,7 +1,7 @@
 package com.wynprice.secretroomsmod.base;
 
 import com.wynprice.secretroomsmod.SecretRooms5;
-import com.wynprice.secretroomsmod.base.interfaces.ISecretTileEntity;
+import com.wynprice.secretroomsmod.tileentity.TileEntityInfomationHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.SoundType;
@@ -84,8 +84,8 @@ public class BaseItemDoor extends Item
         IBlockState iblockstate = door.getDefaultState().withProperty(BlockDoor.FACING, facing).withProperty(BlockDoor.HINGE, isRightHinge ? BlockDoor.EnumHingePosition.RIGHT : BlockDoor.EnumHingePosition.LEFT).withProperty(BlockDoor.POWERED, Boolean.valueOf(flag2)).withProperty(BlockDoor.OPEN, Boolean.valueOf(flag2));
         worldIn.setBlockState(pos, iblockstate.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.LOWER), 3);
         worldIn.setBlockState(blockpos2, iblockstate.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER), 3);
-        ((ISecretTileEntity) worldIn.getTileEntity(pos)).setMirrorState(mirrorState, pos);
-        ((ISecretTileEntity) worldIn.getTileEntity(blockpos2)).setMirrorState(mirrorState, blockpos2);
+        ((TileEntityInfomationHolder) worldIn.getTileEntity(pos)).setMirrorState(mirrorState, pos);
+        ((TileEntityInfomationHolder) worldIn.getTileEntity(blockpos2)).setMirrorState(mirrorState, blockpos2);
         worldIn.notifyNeighborsOfStateChange(pos, door, false);
         worldIn.notifyNeighborsOfStateChange(blockpos2, door, false);
     }

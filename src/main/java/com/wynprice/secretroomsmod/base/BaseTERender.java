@@ -1,7 +1,7 @@
 package com.wynprice.secretroomsmod.base;
 
-import com.wynprice.secretroomsmod.base.interfaces.ISecretTileEntity;
 import com.wynprice.secretroomsmod.render.fakemodels.FakeBlockModel;
+import com.wynprice.secretroomsmod.tileentity.TileEntityInfomationHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -33,10 +33,10 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
     @Override
     public void render(T tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
-        if (!(tileEntity instanceof ISecretTileEntity)) return;
+        if (!(tileEntity instanceof TileEntityInfomationHolder)) return;
 
 
-        ISecretTileEntity te = (ISecretTileEntity) tileEntity;
+        TileEntityInfomationHolder te = (TileEntityInfomationHolder) tileEntity;
         GlStateManager.pushMatrix();
         {
             GlStateManager.enableBlend();

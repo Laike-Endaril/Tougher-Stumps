@@ -1,8 +1,8 @@
 package com.wynprice.secretroomsmod.tileentity;
 
 import com.wynprice.secretroomsmod.base.BaseBlockDoor;
-import com.wynprice.secretroomsmod.base.interfaces.ISecretTileEntity;
 import com.wynprice.secretroomsmod.handler.ParticleHandler;
+import com.wynprice.secretroomsmod.proxy.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -13,14 +13,48 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 
-public class TileEntityInfomationHolder extends TileEntity implements ITickable, ISecretTileEntity
+public class TileEntityInfomationHolder extends TileEntity implements ITickable
 {
     protected IBlockState mirrorState;
 
     private boolean locked;
+
+    public static HashMap<Integer, HashMap<BlockPos, IBlockState>> RENDER_MAP = new HashMap<>();
+
+    public static HashMap<BlockPos, IBlockState> getMap(World world)
+    {
+        if (!RENDER_MAP.containsKey(world.provider.getDimension()))
+            RENDER_MAP.put(world.provider.getDimension(), new HashMap<>());
+        return RENDER_MAP.get(world.provider.getDimension());
+    }
+
+    public static IBlockState getMirrorState(World world, BlockPos pos)
+    {
+        return getMap(world).get(pos) == null && world.getTileEntity(pos) instanceof TileEntityInfomationHolder ? ((TileEntityInfomationHolder) world.getTileEntity(pos)).getMirrorState() : getMap(world).get(pos);
+    }
+
+    public static IBlockState getMirrorState(IBlockAccess access, BlockPos pos)
+    {
+        IBlockState returnState = Blocks.AIR.getDefaultState();
+        final HashMap<Integer, WorldServer> worlds = new HashMap<>();
+        if (FMLCommonHandler.instance().getMinecraftServerInstance() != null)
+            for (WorldServer server : FMLCommonHandler.instance().getMinecraftServerInstance().worlds)
+                worlds.put(server.provider.getDimension(), server);
+        for (int dim : RENDER_MAP.keySet())
+            if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
+                returnState = getMirrorState(ClientProxy.getPlayer().world, pos);
+            else if (worlds.get(dim) == access)
+                returnState = getMirrorState(worlds.get(dim), pos);
+        return returnState == null ? Blocks.STONE.getDefaultState() : returnState;
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
@@ -60,7 +94,7 @@ public class TileEntityInfomationHolder extends TileEntity implements ITickable,
         if (mirrorState == null && ParticleHandler.BLOCKBRAKERENDERMAP.containsKey(pos))
             mirrorState = ParticleHandler.BLOCKBRAKERENDERMAP.get(pos);
         if (mirrorState == null && RENDER_MAP.containsKey(pos))
-            mirrorState = ISecretTileEntity.getMap(world).get(pos);
+            mirrorState = TileEntityInfomationHolder.getMap(world).get(pos);
         return mirrorState;
     }
 
@@ -73,7 +107,7 @@ public class TileEntityInfomationHolder extends TileEntity implements ITickable,
     public void setMirrorStateForcable(IBlockState mirrorState, @Nullable BlockPos pos)
     {
         if (mirrorState.getBlock() instanceof BaseBlockDoor) mirrorState = Blocks.STONE.getDefaultState();
-        ISecretTileEntity.getMap(world).put(this.pos, mirrorState);
+        TileEntityInfomationHolder.getMap(world).put(this.pos, mirrorState);
         this.mirrorState = mirrorState.getBlock().getStateFromMeta(mirrorState.getBlock().getMetaFromState(mirrorState));
     }
 

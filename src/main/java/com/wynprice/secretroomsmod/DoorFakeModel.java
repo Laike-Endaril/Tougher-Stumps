@@ -21,11 +21,11 @@ public class DoorFakeModel extends FakeBlockModel
     @Override
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
     {
-        if (!BaseBlockDoor.class.isAssignableFrom(BaseTERender.currentRender.getBlock().getClass())) return super.getQuads(state, side, rand);
+        if (!BlockFakeDoor.class.isAssignableFrom(BaseTERender.currentRender.getBlock().getClass())) return super.getQuads(state, side, rand);
 
 
         ArrayList<BakedQuad> finalList = new ArrayList<>();
-        IBlockState teMirrorState = ((TileEntityInfomationHolder) BaseTERender.currentWorld.getTileEntity(BaseTERender.currentPos)).getMirrorState();
+        IBlockState teMirrorState = ((TileEntityFakeDoor) BaseTERender.currentWorld.getTileEntity(BaseTERender.currentPos)).getTextureState();
         IBakedModel teMirrorModel = getModel(teMirrorState);
         IBlockState s = BaseTERender.currentRender;
         IBlockState normalState = Blocks.DARK_OAK_DOOR.getDefaultState().withProperty(BlockDoor.FACING, s.getValue(BlockDoor.FACING)).withProperty(BlockDoor.HALF, s.getValue(BlockDoor.HALF)).withProperty(BlockDoor.HINGE, s.getValue(BlockDoor.HINGE)).withProperty(BlockDoor.OPEN, s.getValue(BlockDoor.OPEN)).withProperty(BlockDoor.POWERED, s.getValue(BlockDoor.POWERED));

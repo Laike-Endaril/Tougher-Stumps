@@ -14,14 +14,12 @@ import java.util.ArrayList;
 public class SecretBlocks
 {
 
-    public static final BaseBlockDoor SECRET_WOODEN_DOOR = new BaseBlockDoor("secret_wooden_door", Material.WOOD);
-    public static final BaseBlockDoor SECRET_IRON_DOOR = new BaseBlockDoor("secret_iron_door", Material.IRON);
+    public static final BlockFakeDoor SECRET_WOODEN_DOOR = new BlockFakeDoor("secret_wooden_door", Material.WOOD);
 
 
     public static void preInit()
     {
         regSingleBlockIgnoreAll(SECRET_WOODEN_DOOR);
-        regSingleBlockIgnoreAll(SECRET_IRON_DOOR);
     }
 
     private final static ArrayList<Block> BLOCKS_WITH_CUSTOM_STATE_MAP = new ArrayList<>();

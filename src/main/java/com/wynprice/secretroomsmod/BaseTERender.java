@@ -3,9 +3,7 @@ package com.wynprice.secretroomsmod;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -31,80 +29,89 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
     @Override
     public void render(T tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
-        if (!(tileEntity instanceof TileEntityInfomationHolder)) return;
+        if (!(tileEntity instanceof TileEntityFakeDoor)) return;
 
 
-        TileEntityInfomationHolder te = (TileEntityInfomationHolder) tileEntity;
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
         GlStateManager.pushMatrix();
-        {
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            EntityPlayer entityplayer = Minecraft.getMinecraft().player;
-            double d0 = (entityplayer.lastTickPosX + (entityplayer.posX - entityplayer.lastTickPosX) * (double) partialTicks);
-            double d1 = (entityplayer.lastTickPosY + (entityplayer.posY - entityplayer.lastTickPosY) * (double) partialTicks);
-            double d2 = (entityplayer.lastTickPosZ + (entityplayer.posZ - entityplayer.lastTickPosZ) * (double) partialTicks);
-            Tessellator.getInstance().getBuffer().setTranslation(-d0, -d1, -d2);
-            this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            GlStateManager.enableBlend();
-            World world = getWorld();
-            Tessellator.getInstance().getBuffer().noColor();
-            Tessellator tessellator = Tessellator.getInstance();
-            tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-            Block block = tileEntity.getWorld().getBlockState(tileEntity.getPos()).getBlock();
-            ArrayList<Integer> tintList = new ArrayList<>();
-            currentRender = tileEntity.getWorld().getBlockState(tileEntity.getPos()).getActualState(tileEntity.getWorld(), tileEntity.getPos());
-            currentPos = tileEntity.getPos();
-            currentWorld = tileEntity.getWorld();
-            if (block instanceof BaseBlockDoor && te.getMirrorState() != null)
-            {
-                IBlockState renderState = te.getMirrorState().getBlock().getActualState(te.getMirrorState(), tileEntity.getWorld(), tileEntity.getPos());
-                GlStateManager.shadeModel(Minecraft.isAmbientOcclusionEnabled() ? 7425 : 7424);
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer p = mc.player;
+        double xx = p.lastTickPosX + (p.posX - p.lastTickPosX) * partialTicks;
+        double yy = p.lastTickPosY + (p.posY - p.lastTickPosY) * partialTicks;
+        double zz = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * partialTicks;
+        buffer.setTranslation(-xx, -yy, -zz);
 
-                currentRender = ((BaseBlockDoor) block).overrideThisState(world, currentPos, currentRender);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+        RenderHelper.disableStandardItemLighting();
+
+
+        bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
+        buffer.noColor();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+        ArrayList<Integer> tintList = new ArrayList<>();
+        currentRender = tileEntity.getWorld().getBlockState(tileEntity.getPos()).getActualState(tileEntity.getWorld(), tileEntity.getPos());
+        currentPos = tileEntity.getPos();
+        currentWorld = tileEntity.getWorld();
+
+        World world = getWorld();
+        Block block = world.getBlockState(tileEntity.getPos()).getBlock();
+        TileEntityFakeDoor te = (TileEntityFakeDoor) tileEntity;
+        if (block instanceof BlockFakeDoor && te.getTextureState() != null)
+        {
+            BlockFakeDoor blockDoor = (BlockFakeDoor) block;
+            IBlockState renderState = te.getTextureState().getBlock().getActualState(te.getTextureState(), tileEntity.getWorld(), tileEntity.getPos());
+            GlStateManager.shadeModel(Minecraft.isAmbientOcclusionEnabled() ? 7425 : 7424);
+
+            currentRender = ((BlockFakeDoor) block).overrideThisState(world, currentPos, currentRender);
+            BlockModelRenderer renderer = mc.getBlockRendererDispatcher().getBlockModelRenderer();
+            try
+            {
+                renderer.renderModel(world, blockDoor.phaseModel(new FakeBlockModel(renderState)), world.getBlockState(tileEntity.getPos()), tileEntity.getPos(), buffer, false);
+            }
+            catch (Throwable e)
+            {
                 try
                 {
-                    Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, ((BaseBlockDoor) block).phaseModel(new FakeBlockModel(renderState)),
-                            world.getBlockState(tileEntity.getPos()), tileEntity.getPos(), Tessellator.getInstance().getBuffer(), false);
+                    renderer.renderModel(world, blockDoor.phaseModel(new FakeBlockModel(renderState)), renderState, tileEntity.getPos(), buffer, false);
                 }
-                catch (Throwable e)
+                catch (Throwable t)
                 {
-                    try
-                    {
-                        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, ((BaseBlockDoor) block).phaseModel(new FakeBlockModel(renderState)),
-                                renderState, tileEntity.getPos(), Tessellator.getInstance().getBuffer(), false);
-                    }
-                    catch (Throwable t)
-                    {
-                        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, ((BaseBlockDoor) block).phaseModel(new FakeBlockModel(Blocks.STONE.getDefaultState())),
-                                Blocks.STONE.getDefaultState(), tileEntity.getPos(), Tessellator.getInstance().getBuffer(), false);
-                    }
+                    renderer.renderModel(world, blockDoor.phaseModel(new FakeBlockModel(Blocks.STONE.getDefaultState())), Blocks.STONE.getDefaultState(), tileEntity.getPos(), buffer, false);
                 }
-
-                for (BakedQuad quad : ((BaseBlockDoor) block).phaseModel(new FakeBlockModel(renderState)).getQuads(renderState, null, 0L))
-                    tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
-                for (EnumFacing face : EnumFacing.values())
-                    for (BakedQuad quad : ((BaseBlockDoor) block).phaseModel(new FakeBlockModel(renderState)).getQuads(renderState, face, 0L))
-                        tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
             }
-            Collections.reverse(tintList);
-            for (int i = 0; i < tessellator.getBuffer().getVertexCount() + 1; i++)
+
+            for (BakedQuad quad : blockDoor.phaseModel(new FakeBlockModel(renderState)).getQuads(renderState, null, 0L)) tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
+            for (EnumFacing face : EnumFacing.values())
             {
-                int sec = Math.floorDiv(i - 1, 4);
-                if (sec < 0 || tintList.size() <= sec || tintList.get(sec) < 0)
-                    continue;
-                Color color = new Color(Minecraft.getMinecraft().getBlockColors()
-                        .colorMultiplier(te.getMirrorState(), tileEntity.getWorld(), tileEntity.getPos(), tintList.get(sec)));
-                tessellator.getBuffer().putColorMultiplier(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, i);
+                for (BakedQuad quad : blockDoor.phaseModel(new FakeBlockModel(renderState)).getQuads(renderState, face, 0L))
+                {
+                    tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
+                }
             }
-
-            tessellator.draw();
-            GlStateManager.shadeModel(7424);
-            Tessellator.getInstance().getBuffer().setTranslation(0, 0, 0);
-            GlStateManager.disableBlend();
-            RenderHelper.enableStandardItemLighting();
         }
+        Collections.reverse(tintList);
+        for (int i = 0; i < buffer.getVertexCount() + 1; i++)
+        {
+            int sec = Math.floorDiv(i - 1, 4);
+            if (sec < 0 || tintList.size() <= sec || tintList.get(sec) < 0) continue;
+            Color color = new Color(mc.getBlockColors().colorMultiplier(te.getTextureState(), tileEntity.getWorld(), tileEntity.getPos(), tintList.get(sec)));
+            buffer.putColorMultiplier(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, i);
+        }
+
+        tessellator.draw();
+        GlStateManager.shadeModel(7424);
+        buffer.setTranslation(0, 0, 0);
+
+
+        RenderHelper.enableStandardItemLighting();
+
+        GlStateManager.disableBlend();
+
         GlStateManager.popMatrix();
     }
 }

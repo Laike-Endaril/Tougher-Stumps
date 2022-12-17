@@ -16,9 +16,9 @@ import net.minecraft.world.World;
 
 public class BaseItemDoor extends Item
 {
-    private final BaseBlockDoor door;
+    private final BlockFakeDoor door;
 
-    public BaseItemDoor(BaseBlockDoor door, String name)
+    public BaseItemDoor(BlockFakeDoor door, String name)
     {
         this.door = door;
         setUnlocalizedName(name);
@@ -50,7 +50,7 @@ public class BaseItemDoor extends Item
                 int i = enumfacing.getFrontOffsetX();
                 int j = enumfacing.getFrontOffsetZ();
                 boolean flag = i < 0 && hitZ < 0.5F || i > 0 && hitZ > 0.5F || j < 0 && hitX > 0.5F || j > 0 && hitX < 0.5F;
-                placeDoor(worldIn, pos, iblockstate, enumfacing, door, flag);
+                placeDoor(worldIn, pos, enumfacing, door, flag);
                 SoundType soundtype = worldIn.getBlockState(pos).getBlock().getSoundType(worldIn.getBlockState(pos), worldIn, pos, player);
                 worldIn.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                 itemstack.shrink(1);
@@ -63,7 +63,7 @@ public class BaseItemDoor extends Item
         }
     }
 
-    public static void placeDoor(World worldIn, BlockPos pos, IBlockState mirrorState, EnumFacing facing, Block door, boolean isRightHinge)
+    public static void placeDoor(World worldIn, BlockPos pos, EnumFacing facing, Block door, boolean isRightHinge)
     {
         BlockPos blockpos = pos.offset(facing.rotateY());
         BlockPos blockpos1 = pos.offset(facing.rotateYCCW());
@@ -82,8 +82,6 @@ public class BaseItemDoor extends Item
         IBlockState iblockstate = door.getDefaultState().withProperty(BlockDoor.FACING, facing).withProperty(BlockDoor.HINGE, isRightHinge ? BlockDoor.EnumHingePosition.RIGHT : BlockDoor.EnumHingePosition.LEFT).withProperty(BlockDoor.POWERED, Boolean.valueOf(flag2)).withProperty(BlockDoor.OPEN, Boolean.valueOf(flag2));
         worldIn.setBlockState(pos, iblockstate.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.LOWER), 3);
         worldIn.setBlockState(blockpos2, iblockstate.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER), 3);
-        ((TileEntityInfomationHolder) worldIn.getTileEntity(pos)).setMirrorState(mirrorState);
-        ((TileEntityInfomationHolder) worldIn.getTileEntity(blockpos2)).setMirrorState(mirrorState);
         worldIn.notifyNeighborsOfStateChange(pos, door, false);
         worldIn.notifyNeighborsOfStateChange(blockpos2, door, false);
     }

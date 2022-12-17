@@ -2,7 +2,6 @@ package com.wynprice.secretroomsmod;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -48,8 +47,6 @@ public class SecretRooms5
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        GameRegistry.registerTileEntity(TileEntityInfomationHolder.class, SecretRooms5.MODID + TileEntityInfomationHolder.class.getSimpleName());
-
-        MinecraftForge.EVENT_BUS.register(new ParticleHandler());
+        GameRegistry.registerTileEntity(TileEntityFakeDoor.class, SecretRooms5.MODID + TileEntityFakeDoor.class.getSimpleName());
     }
 }

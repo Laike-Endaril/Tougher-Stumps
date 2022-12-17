@@ -1,4 +1,4 @@
-package com.wynprice.secretroomsmod.render.fakemodels;
+package com.wynprice.secretroomsmod;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

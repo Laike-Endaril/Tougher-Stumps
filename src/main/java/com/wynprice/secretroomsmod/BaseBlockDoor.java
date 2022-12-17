@@ -1,11 +1,5 @@
-package com.wynprice.secretroomsmod.base;
+package com.wynprice.secretroomsmod;
 
-import com.wynprice.secretroomsmod.SecretBlocks;
-import com.wynprice.secretroomsmod.SecretItems;
-import com.wynprice.secretroomsmod.handler.ParticleHandler;
-import com.wynprice.secretroomsmod.render.fakemodels.DoorFakeModel;
-import com.wynprice.secretroomsmod.render.fakemodels.FakeBlockModel;
-import com.wynprice.secretroomsmod.tileentity.TileEntityInfomationHolder;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -271,7 +265,7 @@ public class BaseBlockDoor extends BlockDoor implements ITileEntityProvider
         if (worldIn.isRemote)
         {
             IBlockState blockstate = Blocks.AIR.getDefaultState();
-            BlockPos overPosition = new BlockPos(pos);
+            BlockPos overPosition;
             if (REPLACEABLE_BLOCK_MAP.containsKey(pos))
             {
                 blockstate = REPLACEABLE_BLOCK_MAP.get(pos);
@@ -284,7 +278,7 @@ public class BaseBlockDoor extends BlockDoor implements ITileEntityProvider
                 if (worldIn.getTileEntity(overPosition) instanceof TileEntityInfomationHolder)
                     blockstate = TileEntityInfomationHolder.getMirrorState(worldIn, overPosition);
             }
-            ((TileEntityInfomationHolder) worldIn.getTileEntity(pos)).setMirrorState(blockstate, overPosition);
+            ((TileEntityInfomationHolder) worldIn.getTileEntity(pos)).setMirrorState(blockstate);
         }
     }
 }

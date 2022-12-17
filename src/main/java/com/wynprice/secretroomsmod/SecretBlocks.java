@@ -1,6 +1,5 @@
 package com.wynprice.secretroomsmod;
 
-import com.wynprice.secretroomsmod.base.BaseBlockDoor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;

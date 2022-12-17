@@ -1,9 +1,5 @@
 package com.wynprice.secretroomsmod;
 
-import com.wynprice.secretroomsmod.handler.ParticleHandler;
-import com.wynprice.secretroomsmod.handler.ServerRecievePacketHandler;
-import com.wynprice.secretroomsmod.proxy.ClientProxy;
-import com.wynprice.secretroomsmod.tileentity.TileEntityInfomationHolder;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -55,6 +51,5 @@ public class SecretRooms5
         GameRegistry.registerTileEntity(TileEntityInfomationHolder.class, SecretRooms5.MODID + TileEntityInfomationHolder.class.getSimpleName());
 
         MinecraftForge.EVENT_BUS.register(new ParticleHandler());
-        MinecraftForge.EVENT_BUS.register(new ServerRecievePacketHandler());
     }
 }

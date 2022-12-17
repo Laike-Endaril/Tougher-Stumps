@@ -1,7 +1,5 @@
-package com.wynprice.secretroomsmod.proxy;
+package com.wynprice.secretroomsmod;
 
-import com.wynprice.secretroomsmod.base.BaseTERender;
-import com.wynprice.secretroomsmod.tileentity.TileEntityInfomationHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.client.registry.ClientRegistry;

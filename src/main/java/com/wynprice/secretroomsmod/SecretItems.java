@@ -1,6 +1,5 @@
 package com.wynprice.secretroomsmod;
 
-import com.wynprice.secretroomsmod.base.BaseItemDoor;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;

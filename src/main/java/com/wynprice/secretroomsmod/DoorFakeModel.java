@@ -1,8 +1,5 @@
-package com.wynprice.secretroomsmod.render.fakemodels;
+package com.wynprice.secretroomsmod;
 
-import com.wynprice.secretroomsmod.base.BaseBlockDoor;
-import com.wynprice.secretroomsmod.base.BaseTERender;
-import com.wynprice.secretroomsmod.tileentity.TileEntityInfomationHolder;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

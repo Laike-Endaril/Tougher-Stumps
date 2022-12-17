@@ -21,38 +21,40 @@ public class DoorFakeModel extends FakeBlockModel
     @Override
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
     {
-        if (!BlockFakeDoor.class.isAssignableFrom(BaseTERender.currentRender.getBlock().getClass())) return super.getQuads(state, side, rand);
+        if (!BlockSecretDoor.class.isAssignableFrom(BaseTERender.currentRender.getBlock().getClass())) return super.getQuads(state, side, rand);
 
+
+        IBlockState textureState = ((TileEntityFakeDoor) BaseTERender.currentWorld.getTileEntity(BaseTERender.currentPos)).getTextureState();
+        IBakedModel textureModel = getModel(textureState);
+        IBlockState s = BaseTERender.currentRender;
+        IBlockState baseState = Blocks.DARK_OAK_DOOR.getDefaultState().withProperty(BlockDoor.FACING, s.getValue(BlockDoor.FACING)).withProperty(BlockDoor.HALF, s.getValue(BlockDoor.HALF)).withProperty(BlockDoor.HINGE, s.getValue(BlockDoor.HINGE)).withProperty(BlockDoor.OPEN, s.getValue(BlockDoor.OPEN)).withProperty(BlockDoor.POWERED, s.getValue(BlockDoor.POWERED));
 
         ArrayList<BakedQuad> finalList = new ArrayList<>();
-        IBlockState teMirrorState = ((TileEntityFakeDoor) BaseTERender.currentWorld.getTileEntity(BaseTERender.currentPos)).getTextureState();
-        IBakedModel teMirrorModel = getModel(teMirrorState);
-        IBlockState s = BaseTERender.currentRender;
-        IBlockState normalState = Blocks.DARK_OAK_DOOR.getDefaultState().withProperty(BlockDoor.FACING, s.getValue(BlockDoor.FACING)).withProperty(BlockDoor.HALF, s.getValue(BlockDoor.HALF)).withProperty(BlockDoor.HINGE, s.getValue(BlockDoor.HINGE)).withProperty(BlockDoor.OPEN, s.getValue(BlockDoor.OPEN)).withProperty(BlockDoor.POWERED, s.getValue(BlockDoor.POWERED));
-        for (BakedQuad quad : getModel(normalState).getQuads(normalState, side, rand))
+        for (BakedQuad quad : getModel(baseState).getQuads(baseState, side, rand))
         {
-            List<BakedQuad> secList = new ArrayList<>(teMirrorModel.getQuads(teMirrorState, side, rand));
-            if (secList.isEmpty())
+            List<BakedQuad> textureQuads = textureModel.getQuads(textureState, side, rand);
+            if (textureQuads.isEmpty()) textureQuads = textureModel.getQuads(textureState, null, rand);
+            if (textureQuads.isEmpty())
             {
-                EnumFacing[] fallbackOrder = new EnumFacing[EnumFacing.VALUES.length + 1];
-                System.arraycopy(EnumFacing.VALUES, 0, fallbackOrder, 0, EnumFacing.VALUES.length);
-                fallbackOrder[EnumFacing.VALUES.length] = null;
-                for (EnumFacing facing : fallbackOrder)
+                for (int i = EnumFacing.VALUES.length - 1; i >= 0; i--)
                 {
-                    if (!teMirrorModel.getQuads(teMirrorState, facing, rand).isEmpty()) secList = teMirrorModel.getQuads(teMirrorState, facing, rand);
+                    textureQuads = textureModel.getQuads(textureState, EnumFacing.VALUES[i], rand);
+                    if (!textureQuads.isEmpty()) break;
                 }
             }
-            for (BakedQuad mirrorQuad : secList)
+
+            for (BakedQuad textureQuad : textureQuads)
             {
-                int[] vList = new int[quad.getVertexData().length];
-                System.arraycopy(quad.getVertexData(), 0, vList, 0, vList.length);
-                int[] sList = mirrorQuad.getVertexData();
-                int[] cList = {4, 5, 11, 12, 18, 19, 25, 26};
-                if (sList != null)
+                int[] quadVertexData = new int[quad.getVertexData().length];
+                System.arraycopy(quad.getVertexData(), 0, quadVertexData, 0, quadVertexData.length);
+                int[] textureQuadVertexData = textureQuad.getVertexData();
+                if (textureQuadVertexData != null)
                 {
-                    for (int i : cList) vList[i] = sList[i];
+                    //TODO This loop replaces the texture of the door with the texture of the block below it
+                    //TODO For mine, want to use similar code with the stump and its log type, but more specific code for the roots with their additional soil type
+                    for (int i : new int[]{4, 5, 11, 12, 18, 19, 25, 26}) quadVertexData[i] = textureQuadVertexData[i];
                 }
-                finalList.add(new BakedQuad(vList, mirrorQuad.getTintIndex(), quad.getFace(), Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(state), mirrorQuad.shouldApplyDiffuseLighting(), mirrorQuad.getFormat()));
+                finalList.add(new BakedQuad(quadVertexData, textureQuad.getTintIndex(), quad.getFace(), Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(state), textureQuad.shouldApplyDiffuseLighting(), textureQuad.getFormat()));
             }
         }
         return finalList;

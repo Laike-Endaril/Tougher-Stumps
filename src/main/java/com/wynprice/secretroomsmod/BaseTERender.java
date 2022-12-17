@@ -3,13 +3,15 @@ package com.wynprice.secretroomsmod;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -30,6 +32,12 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
     public void render(T tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
         if (!(tileEntity instanceof TileEntityFakeDoor)) return;
+
+        World world = getWorld();
+        BlockPos pos = tileEntity.getPos();
+        IBlockState state = world.getBlockState(pos);
+        Block block = state.getBlock();
+        if (!(block instanceof BlockSecretDoor)) return;
 
 
         Tessellator tessellator = Tessellator.getInstance();
@@ -54,52 +62,33 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
         buffer.noColor();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
         ArrayList<Integer> tintList = new ArrayList<>();
-        currentRender = tileEntity.getWorld().getBlockState(tileEntity.getPos()).getActualState(tileEntity.getWorld(), tileEntity.getPos());
-        currentPos = tileEntity.getPos();
+        currentRender = tileEntity.getWorld().getBlockState(pos).getActualState(tileEntity.getWorld(), pos);
+        currentPos = pos;
         currentWorld = tileEntity.getWorld();
 
-        World world = getWorld();
-        Block block = world.getBlockState(tileEntity.getPos()).getBlock();
         TileEntityFakeDoor te = (TileEntityFakeDoor) tileEntity;
-        if (block instanceof BlockFakeDoor && te.getTextureState() != null)
+        IBlockState renderState = te.getTextureState().getBlock().getActualState(te.getTextureState(), tileEntity.getWorld(), pos);
+        GlStateManager.shadeModel(Minecraft.isAmbientOcclusionEnabled() ? 7425 : 7424);
+
+        currentRender = ((BlockSecretDoor) block).overrideThisState(world, currentPos, currentRender);
+        mc.getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, new DoorFakeModel(new FakeBlockModel(renderState)), state, pos, buffer, false);
+
+        for (BakedQuad quad : new DoorFakeModel(new FakeBlockModel(renderState)).getQuads(renderState, null, 0)) tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
+        for (EnumFacing face : EnumFacing.values())
         {
-            BlockFakeDoor blockDoor = (BlockFakeDoor) block;
-            IBlockState renderState = te.getTextureState().getBlock().getActualState(te.getTextureState(), tileEntity.getWorld(), tileEntity.getPos());
-            GlStateManager.shadeModel(Minecraft.isAmbientOcclusionEnabled() ? 7425 : 7424);
-
-            currentRender = ((BlockFakeDoor) block).overrideThisState(world, currentPos, currentRender);
-            BlockModelRenderer renderer = mc.getBlockRendererDispatcher().getBlockModelRenderer();
-            try
+            for (BakedQuad quad : new DoorFakeModel(new FakeBlockModel(renderState)).getQuads(renderState, face, 0))
             {
-                renderer.renderModel(world, blockDoor.phaseModel(new FakeBlockModel(renderState)), world.getBlockState(tileEntity.getPos()), tileEntity.getPos(), buffer, false);
-            }
-            catch (Throwable e)
-            {
-                try
-                {
-                    renderer.renderModel(world, blockDoor.phaseModel(new FakeBlockModel(renderState)), renderState, tileEntity.getPos(), buffer, false);
-                }
-                catch (Throwable t)
-                {
-                    renderer.renderModel(world, blockDoor.phaseModel(new FakeBlockModel(Blocks.STONE.getDefaultState())), Blocks.STONE.getDefaultState(), tileEntity.getPos(), buffer, false);
-                }
-            }
-
-            for (BakedQuad quad : blockDoor.phaseModel(new FakeBlockModel(renderState)).getQuads(renderState, null, 0L)) tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
-            for (EnumFacing face : EnumFacing.values())
-            {
-                for (BakedQuad quad : blockDoor.phaseModel(new FakeBlockModel(renderState)).getQuads(renderState, face, 0L))
-                {
-                    tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
-                }
+                tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
             }
         }
         Collections.reverse(tintList);
+        Color color;
         for (int i = 0; i < buffer.getVertexCount() + 1; i++)
         {
             int sec = Math.floorDiv(i - 1, 4);
             if (sec < 0 || tintList.size() <= sec || tintList.get(sec) < 0) continue;
-            Color color = new Color(mc.getBlockColors().colorMultiplier(te.getTextureState(), tileEntity.getWorld(), tileEntity.getPos(), tintList.get(sec)));
+
+            color = new Color(mc.getBlockColors().colorMultiplier(te.getTextureState(), tileEntity.getWorld(), pos, tintList.get(sec)));
             buffer.putColorMultiplier(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, i);
         }
 

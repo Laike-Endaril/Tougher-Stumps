@@ -25,9 +25,9 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockFakeDoor extends BlockDoor implements ITileEntityProvider
+public class BlockSecretDoor extends BlockDoor implements ITileEntityProvider
 {
-    public BlockFakeDoor(String name, Material materialIn)
+    public BlockSecretDoor(String name, Material materialIn)
     {
         super(materialIn);
         setRegistryName(name);
@@ -52,13 +52,13 @@ public class BlockFakeDoor extends BlockDoor implements ITileEntityProvider
     @Override
     public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state)
     {
-        return new ItemStack(SecretItems.SECRET_WOODEN_DOOR);
+        return new ItemStack(SecretBlocksAndItems.ITEM_SECRET_DOOR);
     }
 
     @Override
     public Item getItemDropped(IBlockState state, java.util.Random rand, int fortune)
     {
-        return SecretItems.SECRET_WOODEN_DOOR;
+        return SecretBlocksAndItems.ITEM_SECRET_DOOR;
     }
 
     @Override
@@ -66,12 +66,6 @@ public class BlockFakeDoor extends BlockDoor implements ITileEntityProvider
     {
         IBlockState state = world.getTileEntity(pos) instanceof TileEntityFakeDoor ? ((TileEntityFakeDoor) world.getTileEntity(pos)).getTextureState() : null;
         return state.getBlock().canBeConnectedTo(world, pos, facing);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public FakeBlockModel phaseModel(FakeBlockModel model)
-    {
-        return new DoorFakeModel(model);
     }
 
     public IBlockState overrideThisState(World world, BlockPos pos, IBlockState defaultState)

@@ -1,7 +1,5 @@
 package com.wynprice.secretroomsmod;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -21,26 +19,15 @@ public class SecretRooms5
 
     @Instance(MODID)
     public static SecretRooms5 instance;
-    public static final CreativeTabs TAB = new CreativeTabs(MODID)
-    {
-        @Override
-        public ItemStack getTabIconItem()
-        {
-            return new ItemStack(SecretItems.SECRET_WOODEN_DOOR);
-        }
-    };
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        SecretItems.preInit();
-        SecretBlocks.preInit();
+        SecretBlocksAndItems.preInit();
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            SecretItems.regRenders();
-            SecretBlocks.regRenders();
-            ClientProxy.init(event);
+            SecretBlocksAndItems.regRenders();
         }
     }
 

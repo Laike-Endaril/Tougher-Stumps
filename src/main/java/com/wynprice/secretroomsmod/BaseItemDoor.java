@@ -16,9 +16,9 @@ import net.minecraft.world.World;
 
 public class BaseItemDoor extends Item
 {
-    private final BlockFakeDoor door;
+    private final BlockSecretDoor door;
 
-    public BaseItemDoor(BlockFakeDoor door, String name)
+    public BaseItemDoor(BlockSecretDoor door, String name)
     {
         this.door = door;
         setUnlocalizedName(name);

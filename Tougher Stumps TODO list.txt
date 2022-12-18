@@ -1,5 +1,2 @@
-Make stumps match texture of log they replace
-Have roots store the block they replaced and render it in addition to own model
+Make stump and root textures dynamic (see code from Secret Rooms mod)
 Fix Z fighting with self when 2 stumps are next to each other
-
-Fix

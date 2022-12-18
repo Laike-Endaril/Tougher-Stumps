@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -71,12 +72,13 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
         GlStateManager.shadeModel(Minecraft.isAmbientOcclusionEnabled() ? 7425 : 7424);
 
         currentRender = ((BlockSecretDoor) block).overrideThisState(world, currentPos, currentRender);
-        mc.getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, new DoorFakeModel(new FakeBlockModel(renderState)), state, pos, buffer, false);
+        IBakedModel model = mc.getBlockRendererDispatcher().getModelForState(renderState);
+        mc.getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, SecretDoorModel.provideModel(model), state, pos, buffer, false);
 
-        for (BakedQuad quad : new DoorFakeModel(new FakeBlockModel(renderState)).getQuads(renderState, null, 0)) tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
+        for (BakedQuad quad : SecretDoorModel.provideModel(model).getQuads(renderState, null, 0)) tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
         for (EnumFacing face : EnumFacing.values())
         {
-            for (BakedQuad quad : new DoorFakeModel(new FakeBlockModel(renderState)).getQuads(renderState, face, 0))
+            for (BakedQuad quad : SecretDoorModel.provideModel(model).getQuads(renderState, face, 0))
             {
                 tintList.add(quad.hasTintIndex() ? quad.getTintIndex() : -1);
             }

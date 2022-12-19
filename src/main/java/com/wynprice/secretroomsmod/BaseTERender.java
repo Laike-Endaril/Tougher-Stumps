@@ -25,7 +25,7 @@ import java.util.Collections;
 
 public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRenderer<T>
 {
-    public static IBlockState currentRender;
+    public static IBlockState currentRenderState;
     public static World currentWorld;
     public static BlockPos currentPos;
 
@@ -63,7 +63,7 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
         buffer.noColor();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
         ArrayList<Integer> tintList = new ArrayList<>();
-        currentRender = tileEntity.getWorld().getBlockState(pos).getActualState(tileEntity.getWorld(), pos);
+        currentRenderState = tileEntity.getWorld().getBlockState(pos).getActualState(tileEntity.getWorld(), pos);
         currentPos = pos;
         currentWorld = tileEntity.getWorld();
 
@@ -71,7 +71,7 @@ public class BaseTERender<T extends TileEntity> extends TileEntitySpecialRendere
         IBlockState renderState = te.getTextureState().getBlock().getActualState(te.getTextureState(), tileEntity.getWorld(), pos);
         GlStateManager.shadeModel(Minecraft.isAmbientOcclusionEnabled() ? 7425 : 7424);
 
-        currentRender = ((BlockSecretDoor) block).overrideThisState(world, currentPos, currentRender);
+        currentRenderState = ((BlockSecretDoor) block).overrideThisState(world, currentPos, currentRenderState);
         IBakedModel model = mc.getBlockRendererDispatcher().getModelForState(renderState);
         mc.getBlockRendererDispatcher().getBlockModelRenderer().renderModel(world, SecretDoorModel.provideModel(model), state, pos, buffer, false);
 

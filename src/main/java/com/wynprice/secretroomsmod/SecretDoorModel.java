@@ -98,24 +98,23 @@ public class SecretDoorModel implements IBakedModel
     @Override
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
     {
-        if (!BlockSecretDoor.class.isAssignableFrom(BaseTERender.currentRender.getBlock().getClass())) return textureBlockModel.getQuads(state, side, rand);
+        if (!BlockSecretDoor.class.isAssignableFrom(BaseTERender.currentRenderState.getBlock().getClass())) return textureBlockModel.getQuads(state, side, rand);
 
 
         IBlockState textureState = ((TileEntityFakeDoor) BaseTERender.currentWorld.getTileEntity(BaseTERender.currentPos)).getTextureState();
-        IBakedModel textureModel = getModel(textureState);
-        IBlockState s = BaseTERender.currentRender;
+        IBlockState s = BaseTERender.currentRenderState;
         IBlockState baseState = Blocks.DARK_OAK_DOOR.getDefaultState().withProperty(BlockDoor.FACING, s.getValue(BlockDoor.FACING)).withProperty(BlockDoor.HALF, s.getValue(BlockDoor.HALF)).withProperty(BlockDoor.HINGE, s.getValue(BlockDoor.HINGE)).withProperty(BlockDoor.OPEN, s.getValue(BlockDoor.OPEN)).withProperty(BlockDoor.POWERED, s.getValue(BlockDoor.POWERED));
 
         ArrayList<BakedQuad> finalList = new ArrayList<>();
         for (BakedQuad quad : getModel(baseState).getQuads(baseState, side, rand))
         {
-            List<BakedQuad> textureQuads = textureModel.getQuads(textureState, side, rand);
-            if (textureQuads.isEmpty()) textureQuads = textureModel.getQuads(textureState, null, rand);
+            List<BakedQuad> textureQuads = textureBlockModel.getQuads(textureState, side, rand);
+            if (textureQuads.isEmpty()) textureQuads = textureBlockModel.getQuads(textureState, null, rand);
             if (textureQuads.isEmpty())
             {
                 for (int i = EnumFacing.VALUES.length - 1; i >= 0; i--)
                 {
-                    textureQuads = textureModel.getQuads(textureState, EnumFacing.VALUES[i], rand);
+                    textureQuads = textureBlockModel.getQuads(textureState, EnumFacing.VALUES[i], rand);
                     if (!textureQuads.isEmpty()) break;
                 }
             }

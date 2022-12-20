@@ -1,2 +1,5 @@
+For vanilla logs, wood type (blockstate) is determined by meta, and axis direction models + bark model are variants
+See TODOs in BlockStump
+
 Make stump and root textures dynamic (see code from Secret Rooms mod)
 Fix Z fighting with self when 2 stumps are next to each other

@@ -1,10 +1,12 @@
 package com.fantasticsource.tougherstumps;
 
 import com.fantasticsource.tools.ReflectionTool;
+import com.fantasticsource.tools.Tools;
 import com.google.common.base.Predicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.ParticleManager;
@@ -22,6 +24,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -30,13 +33,17 @@ import net.minecraftforge.common.IPlantable;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import static com.fantasticsource.tougherstumps.TougherStumps.MODID;
 
 public class BlockStump extends Block
 {
-    public Field blockResistanceField = ReflectionTool.getField(Block.class, "field_149781_w", "blockResistance");
+    public Field
+            blockStateField = ReflectionTool.getField(Block.class, "field_176227_L", "blockState"),
+            blockResistanceField = ReflectionTool.getField(Block.class, "field_149781_w", "blockResistance");
 
     public Block log;
 
@@ -45,8 +52,22 @@ public class BlockStump extends Block
         super(log.getMaterial(log.getDefaultState()));
         this.log = log;
 
-        setUnlocalizedName(MODID + ":stump_" + log.getRegistryName().getResourceDomain() + "_" + log.getRegistryName().getResourcePath());
-        setRegistryName("stump_" + log.getRegistryName().getResourceDomain() + "_" + log.getRegistryName().getResourcePath());
+        if (getClass() == BlockStump.class)
+        {
+            setUnlocalizedName(MODID + ":stump_" + log.getRegistryName().getResourceDomain() + "_" + log.getRegistryName().getResourcePath());
+            setRegistryName("stump_" + log.getRegistryName().getResourceDomain() + "_" + log.getRegistryName().getResourcePath());
+        }
+
+        //Hacks to have log field accessible during createBlockState()
+        try
+        {
+            blockStateField.set(this, createBlockState());
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        setDefaultState(blockState.getBaseState());
 
         Blocks.FIRE.setFireInfo(this, (int) (Blocks.FIRE.getEncouragement(log) * 0.5), (int) (Blocks.FIRE.getFlammability(log) * 0.5));
         IBlockState logDefault = log.getDefaultState();
@@ -92,9 +113,70 @@ public class BlockStump extends Block
     @Override
     protected BlockStateContainer createBlockState()
     {
+        //Hacks to have log field accessible during createBlockState()
+        if (log == null) return super.createBlockState();
+
+
+        if (getClass() == BlockStump.class)
+        {
+            Map.Entry<IProperty<?>, Comparable<?>> foundPropertyEntry = findBlockPropertyEntry(log, new String[]{"axis"}, "y", "none", "null");
+            if (foundPropertyEntry == null)
+            {
+                IBlockState logState = log.getDefaultState();
+                System.out.println(TextFormatting.LIGHT_PURPLE + log.getLocalizedName());
+                for (Map.Entry<IProperty<?>, Comparable<?>> entry : logState.getProperties().entrySet())
+                {
+                    System.out.println(TextFormatting.AQUA + "" + entry.getValue());
+                }
+            }
+            else
+            {
+                for (IBlockState logState : log.getBlockState().getValidStates())
+                {
+                    if (!stateHasPropertyValue(logState, foundPropertyEntry)) continue;
+
+                    System.out.println(TextFormatting.LIGHT_PURPLE + log.getLocalizedName());
+                    for (Map.Entry<IProperty<?>, Comparable<?>> entry : logState.getProperties().entrySet())
+                    {
+                        if (entry.getKey().getName().equals(foundPropertyEntry.getKey().getName())) continue;
+
+                        System.out.println(TextFormatting.AQUA + "" + entry.getValue());
+                    }
+                }
+            }
+        }
+
         //TODO probably need to mess with this
         return super.createBlockState();
     }
+
+    public static Map.Entry<IProperty<?>, Comparable<?>> findBlockPropertyEntry(Block block, String[] possiblePropertyNames, String... possibleValues)
+    {
+        for (int i = 0; i < possiblePropertyNames.length; i++) possiblePropertyNames[i] = possiblePropertyNames[i].toLowerCase();
+        List<IBlockState> blockStates = block.getBlockState().getValidStates();
+        //Main loop is values, so that we can prioritize finding the first possible value over the 2nd, etc
+        for (String possibleValue : possibleValues)
+        {
+            for (IBlockState state : blockStates)
+            {
+                for (Map.Entry<IProperty<?>, Comparable<?>> entry : state.getProperties().entrySet())
+                {
+                    if (entry.getValue().toString().equalsIgnoreCase(possibleValue) && Tools.contains(possiblePropertyNames, entry.getKey().getName().toLowerCase())) return entry;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean stateHasPropertyValue(IBlockState state, Map.Entry<IProperty<?>, Comparable<?>> propertyEntry)
+    {
+        for (Map.Entry<IProperty<?>, Comparable<?>> entry : state.getProperties().entrySet())
+        {
+            if (entry.getKey().getName().equals(propertyEntry.getKey().getName()) && entry.getValue().toString().equals(propertyEntry.getValue().toString())) return true;
+        }
+        return false;
+    }
+
 
     @Override
     public int getMetaFromState(IBlockState state)
@@ -132,6 +214,9 @@ public class BlockStump extends Block
     @Override
     public boolean isOpaqueCube(IBlockState state)
     {
+        //Hacks to have log field accessible during createBlockState()
+        if (log == null) return super.isOpaqueCube(state);
+
         return log.isOpaqueCube(log.getDefaultState());
     }
 

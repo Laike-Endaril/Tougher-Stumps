@@ -1,12 +1,11 @@
 package com.fantasticsource.tougherstumps;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLog;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.HashMap;
 
@@ -19,19 +18,20 @@ public class BlocksAndItems
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onBlockRegistry(RegistryEvent.Register<Block> event)
     {
-        IForgeRegistry<Block> registry = ForgeRegistries.BLOCKS;
-        for (Block block : registry.getValues())
+        for (Block block : ForgeRegistries.BLOCKS.getValues())
         {
-            //TODO Natura logs (not subclassed off of BlockLog or even BlockRotatedPillar)
-            if (block instanceof BlockLog)
-            {
-                BlockStump stump = new BlockStump(block);
-                BlockRoots roots = new BlockRoots(block);
-                stumpBlocks.put(block, stump);
-                rootBlocks.put(block, roots);
-                registry.register(stump);
-                registry.register(roots);
-            }
+            if (block.isWood(null, null)) addStumpAndRoots(block);
         }
+    }
+
+    public static void addStumpAndRoots(Block log)
+    {
+        System.out.println(TextFormatting.YELLOW + log.getLocalizedName());
+        BlockStump stump = new BlockStump(log);
+        BlockRoots roots = new BlockRoots(log);
+        stumpBlocks.put(log, stump);
+        rootBlocks.put(log, roots);
+        ForgeRegistries.BLOCKS.register(stump);
+        ForgeRegistries.BLOCKS.register(roots);
     }
 }

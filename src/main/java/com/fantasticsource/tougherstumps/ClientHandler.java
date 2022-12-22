@@ -1,11 +1,14 @@
 package com.fantasticsource.tougherstumps;
 
 import com.fantasticsource.tools.Tools;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.Map;
 
 import static com.fantasticsource.tougherstumps.TougherStumps.MODID;
 
@@ -15,6 +18,12 @@ public class ClientHandler
     public static void onModelsBaked(ModelBakeEvent event)
     {
         IRegistry<ModelResourceLocation, IBakedModel> registry = event.getModelRegistry();
+        for (Map.Entry<Block, BlockStump> entry : BlocksAndItems.stumpBlocks.entrySet())
+        {
+            //TODO setup the blockstate(s)(?) and models for each block, based on those of the log
+        }
+
+
         for (ModelResourceLocation mrl : registry.getKeys())
         {
             String name = mrl.getResourcePath(), variant = mrl.getVariant();
